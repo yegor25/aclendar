@@ -12,14 +12,14 @@ export default function Greeting() {
 
   
   return (
-    <div className={classes.bg} >
+    <div className={classes.bg1} >
       <div className={classes.content1}>
         <div className={classes.textContent}>
           <div className={classes.title}>Добро пожаловать!</div>
           <div className={classes.text}>Спасибо, что выбрали нас, желаем Вам приятного использования сервисом Ipluse</div>
         </div>
 
-        <Link className={classes.link} to={'/userInfo'}><button className={classes.btn}>Начать работу</button></Link>
+        <Link className={classes.link} to={'/main'}><button className={classes.btn}>Начать работу</button></Link>
       </div>
 
     </div>

@@ -23,6 +23,7 @@ clientsRouter.get('/', async (req, res) => {
         const {userId} = req.query
         const clients = await Clients.find( {owner: userId})
         res.json(clients)
+        res.send('ok')
     } catch (error) {
         
     }

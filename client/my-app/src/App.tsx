@@ -3,7 +3,7 @@ import './App.css';
 import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { Registration } from './registration/Registration';
 import { Login } from './registration/Login';
-import { MainPage } from './MainPage';
+import { MainPage } from './mainPage/MainPage';
 import Button from '@mui/material/Button/Button';
 import MenuAppBar from './greeting/Greeting';
 import FabIntegrationSnackbar from './greeting/Greeting';
@@ -60,7 +60,7 @@ function App() {
     <div className="App">
       <div className="mainContainer">
         <div>
-          <Navbar />
+          <Navbar loggedIn = {userState.loggedIn}/>
         </div>
 
         <div className='content'>
@@ -78,7 +78,7 @@ function App() {
               < Route path='*' element={<Navigate to={userState.loggedIn ? "/main" : "/login"} />}> </Route>
             }
             {/* <Route path='/userInfo' element={<UserInfo />} ></Route> */}
-            {register.isRegister && <Route path='/userInfo' element={<UserInfo />} ></Route>}
+            {register.isRegister && <Route path='/userInfo' element={<UserInfo userId = {register.userId} />} ></Route>}
             <Route path='/greeting' element={<Greeting />}></Route>
 
 

@@ -5,11 +5,15 @@ import { Link, Route, Routes } from "react-router-dom";
 import { ForMe } from "./ForMe";
 import { type } from "os";
 import { Company } from "./Company";
+import { useDispatch } from "react-redux";
 type stateType = ReturnType<typeof ForMe | typeof Company>
 
-export const UserInfo = () => {
+type userInfoType = {
+    userId: string
+}
+export const UserInfo = (props: userInfoType) => {
     const classes = userInfoStyles()
-    const [state, setState] = useState<stateType>(<Company />)
+    const [state, setState] = useState<stateType>(<Company userId={props.userId} />)
     const [style, setStyle] = useState<any>(classes.container)
 
     const [active, setActive] = useState<boolean>(false)
@@ -17,6 +21,8 @@ export const UserInfo = () => {
 
     const act = state.type.name === 'ForMe' ? classes.active : ''
     const act2 = state.type.name === 'Company' ? classes.active : ''
+
+
     return (
         <div className={style}>
 
@@ -37,17 +43,18 @@ export const UserInfo = () => {
             </div>
 
 
+            
+                <img className={classes.vector} src={vector} alt="" />
 
-            <img className={classes.vector} src={vector} alt="" />
 
 
             <div className={classes.info}>
-                <div  >
+                <div   >
                     <div className={classes.textItem}>Планируете использовать? </div>
                     <div className={classes.btnContainer}>
                         <button className={`${classes.btn}  ${act}`} onClick={
                             (e) => {
-                                setState(<ForMe />)
+                                setState(<ForMe userId={props.userId} />)
                                 setStyle(classes.miniContainer)
                             }
                         } > Для себя
@@ -56,7 +63,7 @@ export const UserInfo = () => {
                         <button className={`${classes.btnRight} ${act2}`} onClick={
                             () => {
 
-                                setState(<Company />)
+                                setState(<Company userId={props.userId} />)
                                 setStyle(classes.container)
 
                             }
@@ -67,9 +74,7 @@ export const UserInfo = () => {
 
                 </div>
                 {state}
-                <div>
-                    <button className={classes.btnEnd}>Завершить регистрацию</button>
-                </div>
+
 
             </div>
 

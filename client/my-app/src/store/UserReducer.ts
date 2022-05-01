@@ -1,4 +1,5 @@
-import { type } from "os";
+import axios from "axios";
+import { type, userInfo } from "os";
 import React from "react";
 import { Dispatch } from "redux";
 import { userApi } from "../user-api";
@@ -7,17 +8,20 @@ const GET_USER = 'GET-USERS'
 
 type actionTypes = getUsersType | logoutType | autologinType | setDataUserType
 
-type userDataType = { companyName: string, field: string, role: string, clientsCount: number, crmUsers: number }
+type userInfoType = {
+    companyName: string,
+    field: string,
+    role: string,
+    clientsCount: number,
+    crmUsers: number
+}
 export type stateUserType = {
     userToken: string | null,
     loggedIn: boolean,
     email: string,
     userId: string
     password: string,
-    /*userData: {
-        [key: string]: userDataType[]
-    }*/
-    companyName: string, field: string, role: string, clientsCount: number, crmUsers: number
+    userInfo: userInfoType
 }
 type getUsersType = {
     type: 'SET-USERS',
@@ -41,12 +45,7 @@ type autologinType = {
 type setDataUserType = {
     type: "SET-DATA-USER",
     email: string,
-    userId: string,
-    companyName: string,
-    field: string,
-    role: string,
-    clientsCount: number,
-    crmUsers: number
+    userInfo: userInfoType
 }
 
 const initState = {
@@ -56,11 +55,14 @@ const initState = {
     email: '',
     userId: '',
     password: '',
-    companyName: '',
-    field: '',
-    role: '',
-    clientsCount: 0,
-    crmUsers: 0
+    userInfo: {
+        companyName: '',
+        field: '',
+        role: '',
+        clientsCount: 0,
+        crmUsers: 0
+    },
+
 }
 
 
@@ -79,7 +81,8 @@ export const UserReducer = (state: stateUserType = initState, action: actionType
             return { ...state, userToken: action.userToken, loggedIn: true, email: action.email, password: action.password }
         }
         case "SET-DATA-USER":
-            return { ...state, }
+            debugger
+            return { ...state, userInfo: action.userInfo }
 
         default:
             return state
@@ -108,6 +111,20 @@ export const autologinTC = (userToken: string | null, email: string, password: s
         dispatch(autologinAC(userToken, 'test1@mail.ru', 'test11111'))
 
 
+    }
+}
+ const setDataUserAC = (userInfo: userInfoType) => {
+    return { type: 'SET-DATA-USER', userInfo }
+}
+debugger
+export const setDataUserTC = (userId :string, userInfo: userInfoType) => {
+    debugger
+    return (dispatch: Dispatch) => {
+        axios.post('http://localhost:3002/api/auth/userInfo', {userId, userInfo})
+        .then( (res) => {
+            console.log('userInfo', res)
+            dispatch(setDataUserAC(res.data.userInfo))
+        })
     }
 }
 export default UserReducer

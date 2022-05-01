@@ -20,6 +20,7 @@ export const Login = (props: loginPropsType) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [errorMessagePassword, setErrorMessagePassword] = useState('');
     console.log(errorMessage);
     const classes = useStyles()
     const dispatch = useDispatch()
@@ -35,11 +36,18 @@ export const Login = (props: loginPropsType) => {
                     dispatch(setUserAC(res.data.token))
                     navigate('/main')
 
-                } 
+                }
             }
 
             )
-            .catch((error: any) => setErrorMessage(error.response.data.message))
+            .catch((error: any) => {
+                if (error.response.data.message === "Пароли не совпадают") {
+                    setErrorMessagePassword('Ввели неверный пароль')
+                } else {
+                    setErrorMessage(error.response.data.message)
+
+                }
+            })
     }
     return (
         <div className={classes.loginContainer}>
@@ -53,11 +61,19 @@ export const Login = (props: loginPropsType) => {
                     <form onSubmit={(e: { preventDefault: () => void; }) => e.preventDefault()} action="">
                         <div className={classes.email} >
                             <span className={classes.emailTitle}>Email</span>
-                            <input className={classes.input} value={email} onChange={e => setEmail(e.currentTarget.value)} type="email" placeholder="snehal.hule@webvarad.com" />
+                            <input className={classes.input} value={email} onChange={e => {
+                                setErrorMessage('')
+                                setEmail(e.currentTarget.value)
+                            }} type="email" placeholder="snehal.hule@webvarad.com" />
+                            <div className= {classes.error}>{errorMessage}</div>
                         </div>
                         <div className={classes.password}>
                             <span className={classes.emailTitle}>Пароль</span>
-                            <input className={classes.input} value={password} onChange={e => setPassword(e.currentTarget.value)} type="password" placeholder="*********" />
+                            <input className={classes.input} value={password} onChange={e => {
+                                setErrorMessagePassword('')
+                                setPassword(e.currentTarget.value)
+                            }} type="password" placeholder="*********" />
+                            <div className= {classes.error}>{errorMessagePassword}</div>
                         </div>
                     </form>
 
@@ -72,7 +88,7 @@ export const Login = (props: loginPropsType) => {
 
             </div>
 
-            <div>{errorMessage}</div>
+
 
 
 

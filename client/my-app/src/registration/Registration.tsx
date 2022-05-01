@@ -9,7 +9,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { registerAC } from "../store/RegisterReducer";
+import { registerAC, setRegisterUserAC } from "../store/RegisterReducer";
 
 const useStyles = makeStyles({
     root: {
@@ -129,7 +129,11 @@ const useStyles = makeStyles({
         display: 'flex',
         marginTop: '20px',
         justifyContent: 'center'
-    }
+    },
+    '@media (max-width: 768px)' : {
+        registerContent: {
+            margin: ' auto'
+        }}
 });
 
 export const Registration = () => {
@@ -147,6 +151,8 @@ export const Registration = () => {
             .then((res) => {
                 console.log(res);
                 dispatch(registerAC(true))
+                dispatch(setRegisterUserAC(res.data.userId))
+
                 navigate('/userInfo')
             })
            .catch((error) => {
@@ -156,7 +162,7 @@ export const Registration = () => {
             })
     }
     return (
-        <div>
+        <>
             <div className={classes.registerContent}>
                 <div className={classes.bodyTitle}>
                     <div className={classes.h3}>
@@ -190,6 +196,6 @@ export const Registration = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

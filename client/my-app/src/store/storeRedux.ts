@@ -1,5 +1,6 @@
 import { applyMiddleware, combineReducers, createStore } from "redux"
 import thunk from "redux-thunk"
+import { ClientReducer } from "./ClientsReducer"
 import { registerReducer } from "./RegisterReducer"
 import { UserReducer } from "./UserReducer"
 
@@ -8,7 +9,8 @@ import { UserReducer } from "./UserReducer"
 debugger
 const rootReducers = combineReducers({
     user: UserReducer,
-    register: registerReducer
+    register: registerReducer,
+    client: ClientReducer
 })
 
 

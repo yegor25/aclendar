@@ -115,6 +115,12 @@ link: {
     textDecoration: 'none',
     color: '#5D5FEF'
 },
+error: {
+    fontWeight: 600,
+    fontSize: '14px',
+    lineHeight:'24px',
+    color: '#FF2424'
+},
 '@media (max-width: 768px)':
     {
         loginContainer: {

@@ -3,7 +3,7 @@ import React from "react";
 import orange from '../assets/orange.png'
 
 export const greetingStyles = makeStyles({
-    bg: {
+    bg1: {
         background: `url(${orange})`,
         minWidth: '1140px',
         minHeight: '900px',
@@ -67,8 +67,15 @@ export const greetingStyles = makeStyles({
         color: '#3A3A3A'
     },
     '@media (max-width: 767px)': {
+        bg1 : {
+            display: 'flex',
+            minWidth: '100%',
+            maxHeight: '50%',
+           
+        },
         content1: {
-            margin: ' 0px auto',
+            marginTop: '15em',
+            
         },
         title: {
             fontWeight: 600,
@@ -81,9 +88,7 @@ export const greetingStyles = makeStyles({
         btn: {
             maxWidth: '100%'
         },
-        bg: {
-            minWidth: '100%'
-        }
+        
 
     }
 })
