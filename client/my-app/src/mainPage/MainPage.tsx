@@ -24,9 +24,9 @@ import { logoutAC, setUserAC } from '../store/UserReducer';
 import { NewClient } from './NewClient';
 import { RemoveCard } from './RemoveCard';
 import { AppRootState } from '../store/storeRedux';
-import { clientsStateType } from '../store/ClientsReducer';
+import { clientsStateType, setClientsAC } from '../store/ClientsReducer';
 type dataType = {
-    userId: string,
+    userId: string | null,
     isAuth: (user: boolean) => void,
     loggedIn: boolean
 }
@@ -304,47 +304,26 @@ const useStyles = makeStyles({
 })
 export const MainPage = (props: dataType) => {
     const dispatch = useDispatch()
-    const [form, setForm] = useState({
-        name: '',
-        surname: '',
 
-    })
 
-    const [clients, setClients] = useState<Array<ClientsType>>([])
-    const [loading, setLoading] = useState(false)
+    
     const [modal, setModal] = useState(false)
     const [remove, setRemove] = useState(false)
     const [clientId, setClientId] = useState<string>('')
     const classes = useStyles()
-
+    
     const modalClass = modal || remove ? classes.modalActive : ''
-
+    
     const client = useSelector<AppRootState, clientsStateType[]>(state => state.client)
+   
+    const [clients, setClients] = useState<Array<clientsStateType>>(client)
 
-    const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setForm({ ...form, [e.currentTarget.name]: e.currentTarget.value })
-    }
 
-    const removeClient = useCallback(async (clientsId: string) => {
+    const removeClient = (clientsId: string) => {
         setRemove(true)
         setClientId(clientsId);
-        
+    }
 
-    }, [])
-    const addClient = useCallback(async () => {
-        try {
-
-
-            const data = { ...form }
-            await axios.post('/api/clients/add', { ...form, userId: props.userId })
-                .then(res => {
-
-                })
-
-        } catch (error) {
-
-        }
-    }, [form])
     const addNewClient = useCallback(async () => {
         try {
             setModal(true)
@@ -352,42 +331,32 @@ export const MainPage = (props: dataType) => {
 
         }
     }, [])
-    const getClients = useCallback(async () => {
-        setLoading(true)
+    useEffect(() => {
         try {
-            await axios.get('/api/clients/', {
+            debugger
+            axios.get('/api/clients/', {
                 params: { userId: props.userId }
             })
-
-                .then(res => {
-
-                    setLoading(false)
-                    setClients(res.data)
-
-
-
-                }
-                )
-
-
-
+                .then((res) => {
+                    console.log('userssssssss', (res.data));
+                    debugger
+                    dispatch(setClientsAC(res.data.clients))
+                })
         } catch (error) {
 
         }
-        ;
+        setClients(client)
+    }, [client.length])
 
-    }, [props.userId])
-
-    const deleteClients = useCallback(async (id: string) => {
-        await axios.delete(`/api/clients/delete/${id}`)
-            .then(() => getClients())
-    }, [])
+    const searchClient = (e: ChangeEvent<HTMLInputElement>) => {
+        setClients(client.filter(cl => cl.surname.includes(e.currentTarget.value)))
+    }
 
     return (
         <div className={`${classes.wrapper} ${modalClass}`}>
             <div className={classes.mainContent}>
-                {modal && <NewClient modal={modal} setModal={setModal} />}
-                {remove && <RemoveCard clientId = {clientId} remove={remove} setRemove={setRemove} />}
+                {modal && <NewClient userId={props.userId} modal={modal} setModal={setModal} />}
+                {remove && <RemoveCard clientId={clientId} remove={remove} setRemove={setRemove} />}
                 <div className={classes.top}>
                     <div className={classes.search}>
                         <div className={classes.inp}>
@@ -419,7 +388,7 @@ export const MainPage = (props: dataType) => {
                                         <img className={classes.filterImage} src={filter} alt="" />
                                     </button>
                                 </div>
-                                <div><input placeholder='Найти клиентов' className={classes.searchClient} type="text" /></div>
+                                <div><input onChange={searchClient} placeholder='Найти клиентов' className={classes.searchClient} type="text" /></div>
                             </div>
                             <button onClick={addNewClient} className={classes.btnNew}>
                                 <img src={man} alt="" />
@@ -440,96 +409,49 @@ export const MainPage = (props: dataType) => {
                         </div>
                         <div className={classes.clientsContent}>
                             {
-                                client.map(cl => {
-                                    return(
+
+                                clients.map(cl => {
+                                    debugger
+                                    return (
                                         <div className={classes.clientInfo}>
-                                        <div className={classes.clientField}>
-                                            <div className={classes.avatar}>
-                                                <img src={Avatar} alt="" />
+                                            <div className={classes.clientField}>
+                                                <div className={classes.avatar}>
+                                                    <img src={Avatar} alt="" />
+                                                </div>
+                                                <div className={classes.name}>
+                                                    {cl.name} {cl.surname} {cl.patronymic}
+                                                </div>
                                             </div>
-                                            <div className={classes.name}>
-                                                {cl.name} {cl.surname} {cl.patronymic}
+                                            <div className={`${classes.clientField} ${classes.clientText}`}>{cl.phone} </div>
+                                            <div className={`${classes.clientField} ${classes.clientText}`}>2</div>
+                                            <div className={`${classes.clientField} ${classes.clientText}`}>{cl.birthday}</div>
+                                            <div className={`${classes.clientField} ${classes.clientText}`}>12000</div>
+                                            <div className={`${classes.clientField} ${classes.clientText}`}>2000</div>
+                                            <div className={classes.clientField}> <button className={classes.clientBtn}>Записать</button></div>
+                                            <div className={classes.clientField}>
+                                                <button className={classes.btnIcon}><img src={update} alt="" /></button>
+                                                <button onClick={() => {
+
+                                                    console.log(cl.id);
+
+                                                    removeClient(cl.id)
+                                                }} className={`${classes.btnIcon} ${classes.deleteIcon}`}><img src={deleteIcon} alt="" /></button>
                                             </div>
                                         </div>
-                                        <div className={`${classes.clientField} ${classes.clientText}`}>{cl.phone} </div>
-                                        <div className={`${classes.clientField} ${classes.clientText}`}>2</div>
-                                        <div className={`${classes.clientField} ${classes.clientText}`}>{cl.birthday}</div>
-                                        <div className={`${classes.clientField} ${classes.clientText}`}>12000</div>
-                                        <div className={`${classes.clientField} ${classes.clientText}`}>2000</div>
-                                        <div className={classes.clientField}> <button className={classes.clientBtn}>Записать</button></div>
-                                        <div className={classes.clientField}>
-                                            <button className={classes.btnIcon}><img src={update} alt="" /></button>
-                                            <button onClick = { () => removeClient(cl.id)} className={`${classes.btnIcon} ${classes.deleteIcon}`}><img src={deleteIcon} alt="" /></button>
-                                        </div>
-                                    </div>
                                     )
                                 })
                             }
-                           
+
                         </div>
                     </div>
                 </div>
             </div>
-            <h1>Main Page</h1>
             <button onClick={() => {
                 dispatch(logoutAC())
                 props.isAuth(false)
             }
             }>выйти</button>
-            <button onClick={() => { localStorage.removeItem('userToken') }}>remove</button>
-            <form action="" onSubmit={e => e.preventDefault()}>
-                <TextField
-                    id="outlined-name"
-                    label="Name"
-                    value={form.name}
-                    onChange={changeHandler}
-                    name="name"
-                />
-                <TextField
-                    id="outlined-name"
-                    label="Surname"
-                    value={form.surname}
-                    onChange={changeHandler}
-                    name="surname"
-                />
-                <Fab className={classes.btnAdd} color="primary" onClick={addClient} size="medium" aria-label="add">
-                    +
-                </Fab>
 
-
-            </form>
-            <div>
-
-                <LoadingButton
-                    className={classes.btnShow}
-                    size="small"
-                    color="secondary"
-                    onClick={getClients}
-                    loading={loading}
-                    loadingPosition="start"
-                    startIcon={<SaveIcon />}
-                    variant="contained"
-                >
-                    Показать клиентов
-                </LoadingButton>
-
-            </div>
-            <div>
-
-                {
-
-                    clients.map(cl => {
-                        return (
-                            <div key={cl._id}>
-                                {cl.name}
-                                <span> {cl.surname}</span>
-                                <IconButton aria-label="delete" disabled color="primary" />
-                                <DeleteIcon onClick={() => deleteClients(cl._id)} />
-                            </div>
-                        )
-                    })
-                }
-            </div>
         </div>
     )
 }

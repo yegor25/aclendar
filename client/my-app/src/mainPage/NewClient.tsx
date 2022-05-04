@@ -9,11 +9,12 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { indigo } from "@mui/material/colors";
 import { IOSSwitch } from "./IOSswitch";
 import { Controller, useForm } from "react-hook-form";
-import { addClientAC } from "../store/ClientsReducer";
+import { addClientTC } from "../store/ClientsReducer";
 import { useDispatch } from "react-redux";
 type propsType = {
     modal: boolean,
-    setModal: (modal: boolean) => void
+    setModal: (modal: boolean) => void,
+    userId: string | null
 }
 export const NewClient = (props: propsType) => {
 
@@ -21,7 +22,8 @@ export const NewClient = (props: propsType) => {
     const { register, handleSubmit, control } = useForm()
 
     const onSubmit = (data: any) => {
-        dispatch(addClientAC(data.name, data.surname, data.patronymic, data.phone, data.RadioGroup, data.birthday, data.switch))
+        debugger
+        dispatch(addClientTC( data.name, data.surname, data.patronymic, data.phone, data.RadioGroup, data.birthday, data.switch, props.userId))
         props.setModal(false)
     } 
 
@@ -31,6 +33,8 @@ export const NewClient = (props: propsType) => {
     const exit = () => {
         props.setModal(false)
     }
+    console.log(props);
+    
     return (
         <div className={classes.clientContent}>
             <div className={classes.information}>

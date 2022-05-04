@@ -27,7 +27,7 @@ loginRouter.post('/login', async (req, res) => {
                 jwtSecret,
                 {expiresIn: '1h'}
             )
-            return res.status(200).json({token: token})
+            return res.status(200).json({token: token, userId: candidate._id})
            //User.insertMany({token: token})
       
         } catch (error) {

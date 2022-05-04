@@ -4,16 +4,10 @@ import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { Registration } from './registration/Registration';
 import { Login } from './registration/Login';
 import { MainPage } from './mainPage/MainPage';
-import Button from '@mui/material/Button/Button';
-import MenuAppBar from './greeting/Greeting';
-import FabIntegrationSnackbar from './greeting/Greeting';
-import BoxSx from './greeting/Greeting';
 import Greeting from './greeting/Greeting';
 import { Navbar } from './Navbar/Navbar';
-import { makeStyles } from '@mui/material';
 import { UserInfo } from './userInfo/UserInfo';
-import { ForMe } from './userInfo/ForMe';
-import { autologinAC, autologinTC, setUserAC, stateUserType } from './store/UserReducer';
+import {  setUserAC, stateUserType } from './store/UserReducer';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppRootState } from './store/storeRedux';
 import { log } from 'console';
@@ -22,7 +16,6 @@ import { registerAC, stateRegisterType } from './store/RegisterReducer';
 
 function App() {
   const [user, setUser] = useState(false)
-  const [id, setId] = useState('')
   const userState = useSelector<AppRootState, stateUserType>(state => state.user)
   const register = useSelector<AppRootState, stateRegisterType>(state => state.register)
 
@@ -33,12 +26,11 @@ function App() {
   useEffect(() => {
     const userToken = localStorage.getItem('userToken')
     if (userToken) {
+      const userId = localStorage.getItem('userId')
       debugger
-      dispatch(setUserAC(userToken))
+      dispatch(setUserAC(userToken, userId))
     }
-    /* setTimeout(() => {
-       localStorage.removeItem('userToken')
-     }, 10000)*/
+    
 
 
   }, [])
@@ -51,9 +43,7 @@ function App() {
   const isAuth = (userAuth: boolean) => {
     setUser(userAuth)
   }
-  const getId = (userId: string) => {
-    setId(userId)
-  }
+ 
   console.log('rregister', register.isRegister);
 
   return (
@@ -69,8 +59,8 @@ function App() {
           <Routes>
             {
               userState.loggedIn
-                ? <Route path='/main' element={<MainPage isAuth={isAuth} loggedIn={userState.loggedIn} userId={id} />}></Route>
-                : <Route path='/login' element={<Login isAuth={isAuth} getId={getId} loggedIn={userState.loggedIn} />}></Route>
+                ? <Route path='/main' element={<MainPage isAuth={isAuth} loggedIn={userState.loggedIn} userId={userState.userId} />}></Route>
+                : <Route path='/login' element={<Login isAuth={isAuth}  loggedIn={userState.loggedIn} />}></Route>
             }
             <Route path='/register' element={<Registration />}></Route>
 

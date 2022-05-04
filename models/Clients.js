@@ -6,5 +6,10 @@ const mongoose = require('mongoose')
     owner: {type: String, ref: 'User'},
     name: {type:String},
     surname: {type:String},
+    patronymic: {type: String},
+    phone: {type: Number},
+    gender: {type: String},
+    birthday: {type: Date},
+    agreement: {type: Boolean}
 }))
 module.exports = Clients

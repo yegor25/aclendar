@@ -19,15 +19,15 @@ export type stateUserType = {
     userToken: string | null,
     loggedIn: boolean,
     email: string,
-    userId: string
+    userId: string | null
     password: string,
     userInfo: userInfoType
 }
 type getUsersType = {
     type: 'SET-USERS',
     userToken: string | null,
-    loggedIn: boolean
-
+    loggedIn: boolean,
+    userId: string | null
 }
 type logoutType = {
     type: 'LOGOUT',
@@ -70,16 +70,14 @@ const initState = {
 export const UserReducer = (state: stateUserType = initState, action: actionTypes): stateUserType => {
     switch (action.type) {
         case "SET-USERS": {
-
-            return { ...state, userToken: action.userToken, loggedIn: true }
+            debugger
+            return { ...state, userToken: action.userToken, loggedIn: true, userId: action.userId }
         }
         case "LOGOUT":
 
             localStorage.removeItem('userToken')
             return { ...state, userToken: null, loggedIn: false }
-        case "AUTOLOGIN": {
-            return { ...state, userToken: action.userToken, loggedIn: true, email: action.email, password: action.password }
-        }
+       
         case "SET-DATA-USER":
             debugger
             return { ...state, userInfo: action.userInfo }
@@ -90,9 +88,9 @@ export const UserReducer = (state: stateUserType = initState, action: actionType
 }
 
 
-export const setUserAC = (userToken: string | null) => {
+export const setUserAC = (userToken: string | null, userId: string | null) => {
     debugger
-    return { type: "SET-USERS", userToken }
+    return { type: "SET-USERS", userToken, userId}
 }
 
 export const logoutAC = () => {

@@ -5,11 +5,16 @@ const clientsRouter = new Router()
 
 clientsRouter.post('/add', async (req, res) => {
     try {
-        const { name, surname, userId } = req.body
+        const { name, surname, patronymic, phone, gender, birthday, agreement, userId } = req.body
         const client = await new Clients({
             owner: userId,
             name,
             surname,
+            patronymic,
+            phone,
+            gender,
+            birthday,
+            agreement
         })
         await client.save()
         res.json(client)
@@ -22,7 +27,7 @@ clientsRouter.get('/', async (req, res) => {
     try {
         const {userId} = req.query
         const clients = await Clients.find( {owner: userId})
-        res.json(clients)
+        res.json({clients})
         res.send('ok')
     } catch (error) {
         

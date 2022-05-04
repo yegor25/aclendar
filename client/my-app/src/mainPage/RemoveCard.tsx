@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { clientsStateType, removeClientAC } from "../store/ClientsReducer";
+import { clientsStateType, removeClientTC } from "../store/ClientsReducer";
 import { removeStyles } from "./removeStyles";
 
 type removePropsType = {
@@ -17,7 +17,8 @@ export const RemoveCard = (props: removePropsType) => {
         props.setRemove(false)
     }
     const removeClient = (id: string) => {
-        dispatch(removeClientAC(id))
+        debugger
+        dispatch(removeClientTC(id))
         props.setRemove(false)
     }
     return (

@@ -11,7 +11,6 @@ import { useStyles } from "./loginStyles";
 
 type loginPropsType = {
     isAuth: (userAuth: boolean) => void,
-    getId: (userId: string) => void,
     loggedIn: boolean
 }
 
@@ -30,10 +29,12 @@ export const Login = (props: loginPropsType) => {
             .then(res => {
 
                 if (res.data.token) {
+                    console.log('saccascccccc', res);
+                    
                     props.isAuth(true)
-                    props.getId(res.data.userId)
                     localStorage.setItem('userToken', res.data.token)
-                    dispatch(setUserAC(res.data.token))
+                    localStorage.setItem('userId',res.data.userId)
+                    dispatch(setUserAC(res.data.token, res.data.userId))
                     navigate('/main')
 
                 }
