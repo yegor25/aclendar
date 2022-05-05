@@ -25,6 +25,7 @@ import { NewClient } from './NewClient';
 import { RemoveCard } from './RemoveCard';
 import { AppRootState } from '../store/storeRedux';
 import { clientsStateType, setClientsAC } from '../store/ClientsReducer';
+import { Sort } from './Sort';
 type dataType = {
     userId: string | null,
     isAuth: (user: boolean) => void,
@@ -36,7 +37,7 @@ type ClientsType = {
     surname: string
 }
 
-const useStyles = makeStyles({
+export const useStyles = makeStyles({
     wrapper: {
         height: '100%',
         border: '3px solid black',
@@ -300,22 +301,28 @@ const useStyles = makeStyles({
     },
     modalActive: {
         background: 'rgba(0, 0, 0, 0.33)'
+    },
+    sortActive: {
+        width: '120px',
+        height: '115px',
+        borderRadius: '8px',
+        background: '#FFFFFF'
     }
 })
 export const MainPage = (props: dataType) => {
     const dispatch = useDispatch()
 
 
-    
+
     const [modal, setModal] = useState(false)
     const [remove, setRemove] = useState(false)
     const [clientId, setClientId] = useState<string>('')
+    const [sort, setSort] = useState<boolean>(false)
     const classes = useStyles()
-    
-    const modalClass = modal || remove ? classes.modalActive : ''
-    
+    const modalClass = modal || remove || sort ? classes.modalActive : ''
+
     const client = useSelector<AppRootState, clientsStateType[]>(state => state.client)
-   
+
     const [clients, setClients] = useState<Array<clientsStateType>>(client)
 
 
@@ -351,6 +358,7 @@ export const MainPage = (props: dataType) => {
     const searchClient = (e: ChangeEvent<HTMLInputElement>) => {
         setClients(client.filter(cl => cl.surname.includes(e.currentTarget.value)))
     }
+  
 
     return (
         <div className={`${classes.wrapper} ${modalClass}`}>
@@ -380,11 +388,15 @@ export const MainPage = (props: dataType) => {
                     <div className={classes.title}>Клиенты</div>
                     <div className={classes.sort}>
                         <div className={classes.sortContent}>
-                            <div className={classes.statistics}>
+                            <div  className={classes.statistics}>
                                 <div className={classes.item}>Всего: {client.length}</div>
                                 <div className={classes.item}>Новых: 2</div>
-                                <div className={classes.btnSort}>
-                                    <button className={classes.filter}>
+                                <div  className={classes.btnSort}>
+                                    <div >
+                                        {sort && <Sort  sort ={sort} setSort = {setSort}/>}
+
+                                    </div>
+                                    <button onClick={() => setSort(true)} className={classes.filter}>
                                         <img className={classes.filterImage} src={filter} alt="" />
                                     </button>
                                 </div>
